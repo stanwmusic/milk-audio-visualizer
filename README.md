@@ -12,6 +12,15 @@ Thanks to [Soundcloud] (https://soundcloud.com) for providing a great open API!
 
 [Here's a working demo] (http://www.michaelbromley.co.uk/experiments/soundcloud-vis/#muse/undisclosed-desires). Enjoy and share!
 
+# Build
+
+````bash
+$ npm install
+$ npm install -g browserify
+$ browserify js/index.js -o index.js -d
+````
+
+
 # Instructions
 
 Go to [https://soundcloud.com] (https://soundcloud.com) and find some music. From the individual song page, copy the url and paste it into the input of the visualizer, then hit enter or press the play button.

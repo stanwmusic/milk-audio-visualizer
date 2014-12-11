@@ -1,4 +1,5 @@
 function prefixMethod(methodName, options){
+	options = options || {};
 	if (!options.uncapitalized){
 		methodName = methodName.charAt(0).toUpperCase() + methodName.slice(1);
 	}
