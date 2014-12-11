@@ -1,0 +1,25 @@
+{
+  "name": "soundcloud-visualizer",
+  "version": "0.0.0",
+  "description": "This is an experiment in using the web audio API together with canvas to make some interesting and cool-looking visualizations.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gunderson/soundcloud-visualizer.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gunderson/soundcloud-visualizer/issues"
+  },
+  "homepage": "https://github.com/gunderson/soundcloud-visualizer",
+  "devDependencies": {
+    "browserify": "^7.0.0"
+  }
+}
