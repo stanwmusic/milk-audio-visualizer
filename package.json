@@ -8,7 +8,8 @@
   },
   "scripts": {
     "preinstall": "npm i -g browserify",
-    "build": "browserify js/index.js -o index.js -d"
+    "build": "browserify js/index.js -o index.js -d",
+    "run": "beefy js/index.js"
   },
   "repository": {
     "type": "git",
