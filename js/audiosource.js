@@ -1,6 +1,8 @@
 var prefixMethod = require("./prefixmethod");
 
-prefixMethod("getUserMedia", {parent:navigator});
+prefixMethod("getUserMedia", {
+    parent: navigator
+});
 prefixMethod("AudioContext");
 
 
@@ -14,43 +16,59 @@ prefixMethod("AudioContext");
  */
 
 
-var MicrophoneAudioSource = function() {
+var MicrophoneAudioSource = function () {
     var self = this;
     this.volume = 0;
     this.streamData = new Uint8Array(128);
     var analyser;
 
-    var sampleAudioStream = function() {
+    var sampleAudioStream = function () {
         analyser.getByteFrequencyData(self.streamData);
         // calculate an overall volume value
         var total = 0;
-        for(var i in self.streamData) {
+        for (var i in self.streamData) {
             total += self.streamData[i];
         }
         self.volume = total;
     };
 
     // get the input stream from the microphone
-    navigator.getUserMedia ( { audio: true }, function (stream) {
+    navigator.getUserMedia({
+        audio: true
+    }, function (stream) {
         var audioCtx = new window.AudioContext();
         var mic = audioCtx.createMediaStreamSource(stream);
         analyser = audioCtx.createAnalyser();
         analyser.fftSize = 256;
         mic.connect(analyser);
         setInterval(sampleAudioStream, 20);
-    }, function(){ alert("error getting microphone input."); });
+    }, function () {
+        alert("error getting microphone input.");
+    });
 };
 
-var SoundCloudAudioSource = function(player) {
+var SoundCloudAudioSource = function (loader, player) {
     var self = this;
-    var analyser;
     var audioCtx = new window.AudioContext();
-    analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 256;
+    var leftAnalyser = audioCtx.createAnalyser();
+    var rightAnalyser = audioCtx.createAnalyser();
+    var splitter = audioCtx.createChannelSplitter(2);
+    var merger = audioCtx.createChannelMerger(2);
     var source = audioCtx.createMediaElementSource(player);
-    source.connect(analyser);
-    analyser.connect(audioCtx.destination);
-    var sampleAudioStream = function() {
+
+    // Smallest fftSize possible to speed up calculations
+    leftAnalyser.fftSize = 512;
+    rightAnalyser.fftSize = 512;
+
+    source.connect(splitter);
+    splitter.connect(leftAnalyser, 0);
+    splitter.connect(rightAnalyser, 1);
+    leftAnalyser.connect(merger, 0, 0);
+    rightAnalyser.connect(merger, 0, 1);
+    merger.connect(audioCtx.destination);
+
+    // FIXME: not used, remove
+    var sampleAudioStream = function () {
         analyser.getByteFrequencyData(self.streamData);
         // calculate an overall volume value
         var total = 0;
@@ -59,22 +77,30 @@ var SoundCloudAudioSource = function(player) {
         }
         self.volume = total;
     };
-    setInterval(sampleAudioStream, 20);
+    //setInterval(sampleAudioStream, 20);
     // public properties and methods
-    this.volume = 0;
-    this.streamData = new Uint8Array(128);
-    this.playStream = function(streamUrl) {
+    //this.volume = 0;
+    //this.streamData = new Uint8Array(128);
+    this.playStream = function (streamUrl) {
         // get the input stream from the audio element
-        player.addEventListener('ended', function(){
-            self.directStream('coasting');
+        player.addEventListener('ended', function () {
+            loader.directStream('coasting');
         });
         player.setAttribute('src', streamUrl);
         player.play();
     };
+
+    this.getPCM = function () {
+        var leftDataArray = new Float32Array(leftAnalyser.fftSize);
+        leftAnalyser.getFloatTimeDomainData(leftDataArray);
+        var rightDataArray = new Float32Array(rightAnalyser.fftSize);
+        rightAnalyser.getFloatTimeDomainData(rightDataArray);
+        return [leftDataArray, rightDataArray];
+    }
 };
-if (typeof module === "object"){
-	module.exports = {
-		SoundCloudAudioSource: SoundCloudAudioSource,
-		MicrophoneAudioSource: MicrophoneAudioSource
-	};
+if (typeof module === "object") {
+    module.exports = {
+        SoundCloudAudioSource: SoundCloudAudioSource,
+        MicrophoneAudioSource: MicrophoneAudioSource
+    };
 }

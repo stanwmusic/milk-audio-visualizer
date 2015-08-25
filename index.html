@@ -3,6 +3,7 @@
 <head>
     <title>Soundcloud Visualizer by Michael Bromley</title>
     <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -18,7 +19,7 @@
     <b>right/left arrow</b> - skip forward/backwards through playlist<br>
 </div>
 
-<div id="visualizer"></div>
+<canvas id="visualizer"></canvas>
 
 <div id="controlPanel" class="hidden">
     <div id="tab"><a href="#" id="toggleButton"><i class="icon-menu"></i></a></div>
@@ -27,10 +28,15 @@
         <div id="infoArtist"></div>
         <div id="infoTrack"></div>
     </div>
+    <div id="presetControls">
+        <button id="prevPreset"><i class="icon-previous"></i></button>
+        <button id="randPreset"><i class="icon-shuffle"></i></button>
+        <button id="nextPreset"><i class="icon-next"></i></button>
+    </div>
     <div id="playerControls">
         <form id="form">
             <input id="input" placeholder="Paste Soundcloud URL here (https://soundcloud.com/artist/track)">
-            <button type="submit" id="submit"><i class="icon-play"></i></button><br>
+            <button type="submit" id="submit"><i class="icon-play2"></i></button><br>
         </form>
         <audio id="player" controls="" autoplay="" preload autobuffer></audio>
     </div>
@@ -46,6 +52,6 @@
 </footer>
 
 <script src="http://connect.soundcloud.com/sdk.js"></script>
-<script src="index.js"></script>
+<script src="js/index.js"></script>
 </body>
 </html>

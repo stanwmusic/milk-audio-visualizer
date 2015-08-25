@@ -2,7 +2,7 @@
  * Class to update the UI when a new sound is loaded
  * @constructor
  */
-var UiUpdater = function() {
+var UiUpdater = function () {
     var controlPanel = document.getElementById('controlPanel');
     var trackInfoPanel = document.getElementById('trackInfoPanel');
     var infoImage = document.getElementById('infoImage');
@@ -10,13 +10,13 @@ var UiUpdater = function() {
     var infoTrack = document.getElementById('infoTrack');
     var messageBox = document.getElementById('messageBox');
 
-    this.clearInfoPanel = function() {
+    this.clearInfoPanel = function () {
         // first clear the current contents
         infoArtist.innerHTML = "";
         infoTrack.innerHTML = "";
         trackInfoPanel.className = 'hidden';
     };
-    this.update = function(loader) {
+    this.update = function (loader) {
         // update the track and artist into in the controlPanel
         var artistLink = document.createElement('a');
         artistLink.setAttribute('href', loader.sound.user.permalink_url);
@@ -24,9 +24,9 @@ var UiUpdater = function() {
         var trackLink = document.createElement('a');
         trackLink.setAttribute('href', loader.sound.permalink_url);
 
-        if(loader.sound.kind=="playlist"){
-            trackLink.innerHTML = "<p>" + loader.sound.tracks[loader.streamPlaylistIndex].title + "</p>" + "<p>"+loader.sound.title+"</p>";
-        }else{
+        if (loader.sound.kind == "playlist") {
+            trackLink.innerHTML = "<p>" + loader.sound.tracks[loader.streamPlaylistIndex].title + "</p>" + "<p>" + loader.sound.title + "</p>";
+        } else {
             trackLink.innerHTML = loader.sound.title;
         }
 
@@ -46,14 +46,14 @@ var UiUpdater = function() {
         var trackToken = loader.sound.permalink_url.substr(22);
         window.location = '#' + trackToken;
     };
-    this.toggleControlPanel = function() {
+    this.toggleControlPanel = function () {
         if (controlPanel.className.indexOf('hidden') === 0) {
             controlPanel.className = '';
         } else {
             controlPanel.className = 'hidden';
         }
     };
-    this.displayMessage = function(title, message) {
+    this.displayMessage = function (title, message) {
         messageBox.innerHTML = ''; // reset the contents
 
         var titleElement = document.createElement('h3');
@@ -65,7 +65,7 @@ var UiUpdater = function() {
         var closeButton = document.createElement('a');
         closeButton.setAttribute('href', '#');
         closeButton.innerHTML = 'close';
-        closeButton.addEventListener('click', function(e) {
+        closeButton.addEventListener('click', function (e) {
             e.preventDefault();
             messageBox.className = 'hidden';
         });
@@ -77,6 +77,6 @@ var UiUpdater = function() {
         messageBox.appendChild(closeButton);
     };
 };
-if (typeof module === "object"){
-	module.exports = UiUpdater;
+if (typeof module === "object") {
+    module.exports = UiUpdater;
 }

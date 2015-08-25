@@ -2,32 +2,35 @@ var UiUpdater = require("./uiupdater");
 var SoundCloudAudioSource = require("./audiosource").SoundCloudAudioSource;
 var SoundcloudLoader = require("./soundcloudloader");
 var Visualizer = require("./visualizer");
+var Milkshake = require("./milkshake");
 
 
 window.onload = function init() {
 
-    var visualizer = new Visualizer();
-    var player = new Audio();
+    var player = document.getElementById('player');
     var uiUpdater = new UiUpdater();
-    var loader = new SoundcloudLoader(player,uiUpdater);
+    var loader = new SoundcloudLoader(player, uiUpdater);
 
-    var audioSource = new SoundCloudAudioSource(player);
+    var audioSource = new SoundCloudAudioSource(loader, player);
     var form = document.getElementById('form');
-    var loadAndUpdate = function(trackUrl) {
+    var loadAndUpdate = function (trackUrl) {
         loader.loadStream(trackUrl,
-            function() {
+            function () {
                 uiUpdater.clearInfoPanel();
                 audioSource.playStream(loader.streamUrl());
                 uiUpdater.update(loader);
                 setTimeout(uiUpdater.toggleControlPanel, 3000); // auto-hide the control panel
             },
-            function() {
+            function () {
                 uiUpdater.displayMessage("Error", loader.errorMessage);
             });
     };
 
-    visualizer.init({
+    visualizer = new Milkshake({
         containerId: 'visualizer',
+        prevPresetId: 'prevPreset',
+        nextPresetId: 'nextPreset',
+        randPresetId: 'randPreset',
         audioSource: audioSource
     });
 
@@ -40,41 +43,39 @@ window.onload = function init() {
     }
 
     // handle the form submit event to load the new URL
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', function (e) {
         e.preventDefault();
         var trackUrl = document.getElementById('input').value;
         loadAndUpdate(trackUrl);
     });
     var toggleButton = document.getElementById('toggleButton');
-    toggleButton.addEventListener('click', function(e) {
+    toggleButton.addEventListener('click', function (e) {
         e.preventDefault();
         uiUpdater.toggleControlPanel();
     });
     var aboutButton = document.getElementById('credit');
-    aboutButton.addEventListener('click', function(e) {
+    aboutButton.addEventListener('click', function (e) {
         e.preventDefault();
         var message = document.getElementById('info').innerHTML;
         uiUpdater.displayMessage("About", message);
     });
 
     window.addEventListener("keydown", keyControls, false);
-     
+
     function keyControls(e) {
-        switch(e.keyCode) {
-            case 32:
-                // spacebar pressed
-                loader.directStream('toggle');
-                break;
-            case 37:
-                // left key pressed
-                loader.directStream('backward');
-                break;
-            case 39:
-                // right key pressed
-                loader.directStream('forward');
-                break;
-        }   
+        switch (e.keyCode) {
+        case 32:
+            // spacebar pressed
+            loader.directStream('toggle');
+            break;
+        case 37:
+            // left key pressed
+            loader.directStream('backward');
+            break;
+        case 39:
+            // right key pressed
+            loader.directStream('forward');
+            break;
+        }
     }
-
-
 };
