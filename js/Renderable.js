@@ -166,23 +166,23 @@ var MilkdropWaveform = RenderItem.extend({
                 this.temp_a *= 0.13;
                 break;
             } else if (this.mode == WaveMode.Blob3) {
-            switch (context.texsize) {
-            case 256:
-                this.temp_a *= 0.075;
-                break;
-            case 512:
-                this.temp_a *= 0.15;
-                break;
-            case 1024:
-                this.temp_a *= 0.22;
-                break;
-            case 2048:
-                this.temp_a *= 0.33;
-                break;
+                switch (context.texsize) {
+                case 256:
+                    this.temp_a *= 0.075;
+                    break;
+                case 512:
+                    this.temp_a *= 0.15;
+                    break;
+                case 1024:
+                    this.temp_a *= 0.22;
+                    break;
+                case 2048:
+                    this.temp_a *= 0.33;
+                    break;
+                }
+                this.temp_a *= 1.3;
+                this.temp_a *= Math.pow(context.music.treb, 2.0);
             }
-            this.temp_a *= 1.3;
-            this.temp_a *= Math.pow(context.music.treb, 2.0);
-        }
 
         if (this.maximizeColors) {
             if (this.r >= this.g && this.r >= this.b) {
