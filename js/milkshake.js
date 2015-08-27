@@ -50,6 +50,7 @@ var Milkshake = Class.extend({
         var nextButton = document.getElementById(options.nextPresetId);
         var canvas = document.getElementById(options.containerId);
         var presetName = document.getElementById(options.presetNameId);
+        var shaker;
 
         // resize the canvas to fill browser window dynamically
         window.addEventListener('resize', resizeCanvas, false);
@@ -57,11 +58,13 @@ var Milkshake = Class.extend({
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+            if (shaker)
+                shaker.reset(canvas.width, canvas.height);
         }
         resizeCanvas();
 
         this.initGL(canvas, (function (glu) {
-            var shaker = new Shaker(glu, function (name) {
+            shaker = new Shaker(glu, function (name) {
                 presetName.textContent = name;
             });
             prevButton.addEventListener("click", function () {

@@ -51,8 +51,6 @@ var Shaker = Class.extend({
         //this.matcher.distanceFunction().addMetric(new ShapeXYDistance());
 
         this.reset();
-        this.renderer.reset(this.settings.windowWidth, this.settings.windowHeight);
-
         this.renderer.correction = this.settings.aspectCorrection;
         this.music.beat_sensitivity = this.settings.beatSensitivity;
 
@@ -61,6 +59,7 @@ var Shaker = Class.extend({
 
     reset: function () {
         this.music.reset();
+        this.renderer.reset(window.innerWidth, window.innerHeight);
     },
 
     renderFrame: function () {
