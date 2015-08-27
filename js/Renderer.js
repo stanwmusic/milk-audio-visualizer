@@ -128,7 +128,7 @@ var Renderer = Class.extend({
         var glu = this.glu;
         var gl = glu.gl;
 
-        gl.bindTexture(gl.TEXTURE_2D, this.renderTarget.textureID[0]);
+        gl.bindTexture(gl.TEXTURE_2D, this.renderTarget.textureID[1]);
         if (pipeline.textureWrap == 0) {
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
