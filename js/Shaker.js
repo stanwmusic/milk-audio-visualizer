@@ -10,11 +10,10 @@ var RenderItemMatcher = require("./RenderItemMatcher");
 var RenderItemMergeFunction = require("./RenderItemMergeFunction");
 
 var Shaker = Class.extend({
-    init: function (glu) {
+    init: function (glu, presetChanged) {
         this.settings = {
             meshX: 32,
             meshY: 24,
-            fps: 60,
             textureSize: 1024,
             windowWidth: window.innerWidth,
             windowHeight: window.innerHeight,
@@ -28,18 +27,11 @@ var Shaker = Class.extend({
         this.timeKeeper = new TimeKeeper(this.settings.presetDuration);
         this.music = new Music();
         this.glu = glu;
-        if (this.settings.fps > 0)
-            this.mspf = Math.floor(1000.0 / this.settings.fps);
-        else this.mspf = 0;
-        this.timed = 0;
-        this.timestart = 0;
-        this.count = 0;
-        this.fpsstart = 0;
+        this.presetChanged = presetChanged || function () {};
 
         this.renderer = new Renderer(glu, this.settings.windowWidth, this.settings.windowHeight,
             this.settings.meshX, this.settings.meshY,
             this.settings.textureSize, this.music);
-        this.running = true;
 
         this.presetNames = [];
         for (var presetName in Presets) {
@@ -49,8 +41,7 @@ var Shaker = Class.extend({
         }
 
         this.presetPos = 0;
-        this.activePreset = this.loadPreset();
-        this.renderer.SetPipeline(this.activePreset.pipeline());
+        this.switchPreset();
 
         this.matcher = new RenderItemMatcher();
         this.merger = new RenderItemMergeFunction.MasterRenderItemMerge();
@@ -65,24 +56,15 @@ var Shaker = Class.extend({
         this.renderer.correction = this.settings.aspectCorrection;
         this.music.beat_sensitivity = this.settings.beatSensitivity;
 
-        this.infoMessages = {};
-        this.infoBoxPos = -1;
         this.timeKeeper.StartPreset();
     },
 
     reset: function () {
-        this.mspf = 0;
-        this.timed = 0;
-        this.timestart = 0;
-        this.count = 0;
-        this.fpsstart = 0;
         this.music.reset();
     },
 
     renderFrame: function () {
-        this.timestart = this.timeKeeper.getTicks(this.timeKeeper.startTime);
         this.timeKeeper.UpdateTimers();
-        this.mspf = Math.floor(1000.0 / this.settings.fps);
         this.pipelineContext.time = this.timeKeeper.GetRunningTime();
         this.pipelineContext.frame = this.timeKeeper.PresetFrameA();
         this.pipelineContext.progress = this.timeKeeper.PresetProgressA();
@@ -115,18 +97,6 @@ var Shaker = Class.extend({
 
         this.activePreset.Render(this.music, this.pipelineContext);
         this.renderer.RenderFrame(this.activePreset.pipeline(), this.pipelineContext);
-
-        this.count++;
-        if (this.count % 100 == 0) {
-            this.renderer.realfps = 100.0 / ((this.timeKeeper.getTicks(this.timeKeeper.startTime) - this.fpsstart) / 1000);
-            this.infoMessages["fps"] = "rendering at " + Math.round(this.renderer.realfps * 100) / 100 + " frames per second";
-            this.fpsstart = this.timeKeeper.getTicks(this.timeKeeper.startTime);
-        }
-
-        var timediff = this.timeKeeper.getTicks(this.timeKeeper.startTime) - this.timestart;
-        if (timediff < this.mspf)
-            return Math.floor(this.mspf - timediff);
-        return 0;
     },
 
     evaluateSecondPreset: function () {
@@ -136,45 +106,33 @@ var Shaker = Class.extend({
         this.m_activePreset2.Render(this.music, this.pipelineContext2);
     },
 
-    selectNext: function (hardCut) {
-        if (this.presetPos >= this.presetNames.length - 1)
-            return;
-        if (!hardCut)
-            this.timeKeeper.StartSmoothing();
-        this.presetPos++;
-        if (!hardCut) {
-            this.activePreset2 = this.switchPreset();
-        } else {
-            this.activePreset = this.switchPreset();
-            this.timeKeeper.StartPreset();
-        }
-        this.presetSwitchedEvent(hardCut, this.presetPos);
+    selectNext: function () {
+        if (this.presetPos == this.presetNames.length - 1)
+            this.presetPos = 0;
+        else
+            this.presetPos++;
+        this.switchPreset();
+        this.timeKeeper.StartPreset();
     },
 
     selectPrev: function () {
         if (this.presetPos == 0)
-            return;
-        this.presetPos--;
-        this.activePreset = this.switchPreset();
+            this.presetPos = this.presetNames.length - 1;
+        else
+            this.presetPos--;
+        this.switchPreset();
         this.timeKeeper.StartPreset();
     },
 
     switchPreset: function () {
-        var targetPreset = this.loadPreset();
-        this.renderer.SetPipeline(targetPreset.pipeline());
-        return targetPreset;
-    },
-
-    loadPreset: function () {
-        var preset = Presets[this.presetNames[this.presetPos]];
-        return preset;
+        this.activePreset = Presets[this.presetNames[this.presetPos]];
+        this.renderer.SetPipeline(this.activePreset.pipeline());
+        this.presetChanged(this.presetNames[this.presetPos]);
     },
 
     havePresets: function () {
         return this.presetPos < this.presetNames.length - 1;
-    },
-
-    presetSwitchedEvent: function () {}
+    }
 });
 
 module.exports = Shaker;
