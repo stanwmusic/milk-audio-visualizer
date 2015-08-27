@@ -19,7 +19,7 @@ window.onload = function init() {
                 uiUpdater.clearInfoPanel();
                 audioSource.playStream(loader.streamUrl());
                 uiUpdater.update(loader);
-                setTimeout(uiUpdater.toggleControlPanel, 3000); // auto-hide the control panel
+                //setTimeout(uiUpdater.toggleControlPanel, 3000); // auto-hide the control panel
             },
             function () {
                 uiUpdater.displayMessage("Error", loader.errorMessage);
@@ -31,6 +31,7 @@ window.onload = function init() {
         prevPresetId: 'prevPreset',
         nextPresetId: 'nextPreset',
         randPresetId: 'randPreset',
+        presetNameId: 'presetName',
         audioSource: audioSource
     });
 

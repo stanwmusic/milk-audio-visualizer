@@ -44,11 +44,12 @@ var Milkshake = Class.extend({
 
     init: function (options) {
         this.texture_list = ["./assets/title.png"];
-        this.audio = options.audioSource;
 
+        var audio = options.audioSource;
         var prevButton = document.getElementById(options.prevPresetId);
         var nextButton = document.getElementById(options.nextPresetId);
         var canvas = document.getElementById(options.containerId);
+        var presetName = document.getElementById(options.presetNameId);
 
         // resize the canvas to fill browser window dynamically
         window.addEventListener('resize', resizeCanvas, false);
@@ -59,12 +60,23 @@ var Milkshake = Class.extend({
         }
         resizeCanvas();
 
-        this.initGL(canvas, (function () {
-            this.shaker = new Shaker(this.glu, canvas);
-            prevButton.addEventListener("click", this.shaker.selectPrev.bind(this.shaker), false);
-            nextButton.addEventListener("click", this.shaker.selectNext.bind(this.shaker, true), false);
+        this.initGL(canvas, (function (glu) {
+            var shaker = new Shaker(glu, function (name) {
+                presetName.textContent = name;
+            });
+            prevButton.addEventListener("click", function () {
+                shaker.selectPrev();
+            }, false);
+            nextButton.addEventListener("click", function () {
+                shaker.selectNext(true);
+            }, false);
             //this.shaker.selectNext(true);
-            window.requestAnimationFrame(this.animationLoop.bind(this));
+            function animationLoop(when) {
+                shaker.music.addPCM.apply(shaker.music, audio.getPCM());
+                shaker.renderFrame();
+                window.requestAnimationFrame(animationLoop);
+            }
+            window.requestAnimationFrame(animationLoop);
             /*setInterval(function() {
               shaker.selectNext(true);
             }, 100);
@@ -73,15 +85,8 @@ var Milkshake = Class.extend({
                 shaker.selectPrev();
               }, 10000);
             }, 5000); */
-        }).bind(this));
+        }));
     },
-
-    animationLoop: function (when) {
-        this.shaker.music.addPCM.apply(this.shaker.music, this.audio.getPCM());
-        this.shaker.renderFrame(this.shaker);
-        window.requestAnimationFrame(this.animationLoop.bind(this));
-    },
-
 
     /* 
      * Global WebGL, Programmable Shader, and Linear Algebra Routines 
@@ -96,7 +101,7 @@ var Milkshake = Class.extend({
             premultipliedAlpha: true,
             preserveDrawingBuffer: false,
         });
-        var glu = this.glu = new GLU(gl);
+        var glu = new GLU(gl);
 
         var texloads = 0;
         for (var i = 0; i < this.texture_list.length; i++) {
