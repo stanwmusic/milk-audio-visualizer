@@ -25,28 +25,30 @@ var SoundcloudLoader = function (player, uiUpdater) {
         SC.get('/resolve', {
             url: track_url
         }, function (sound) {
-            if (sound.errors) {
-                self.errorMessage = "";
-                for (var i = 0; i < sound.errors.length; i++) {
-                    self.errorMessage += sound.errors[i].error_message + '<br>';
-                }
-                self.errorMessage += 'Make sure the URL has the correct format: https://soundcloud.com/user/title-of-the-track';
-                errorCallback();
-            } else {
-
-                if (sound.kind == "playlist") {
-                    self.sound = sound;
-                    self.streamPlaylistIndex = 0;
-                    self.streamUrl = function () {
-                        return sound.tracks[self.streamPlaylistIndex].stream_url + '?client_id=' + client_id;
+            if (sound) {
+                if (sound.errors) {
+                    self.errorMessage = "";
+                    for (var i = 0; i < sound.errors.length; i++) {
+                        self.errorMessage += sound.errors[i].error_message + '<br>';
                     }
-                    successCallback();
+                    self.errorMessage += 'Make sure the URL has the correct format: https://soundcloud.com/user/title-of-the-track';
+                    errorCallback();
                 } else {
-                    self.sound = sound;
-                    self.streamUrl = function () {
-                        return sound.stream_url + '?client_id=' + client_id;
-                    };
-                    successCallback();
+
+                    if (sound.kind == "playlist") {
+                        self.sound = sound;
+                        self.streamPlaylistIndex = 0;
+                        self.streamUrl = function () {
+                            return sound.tracks[self.streamPlaylistIndex].stream_url + '?client_id=' + client_id;
+                        }
+                        successCallback();
+                    } else {
+                        self.sound = sound;
+                        self.streamUrl = function () {
+                            return sound.stream_url + '?client_id=' + client_id;
+                        };
+                        successCallback();
+                    }
                 }
             }
         });
