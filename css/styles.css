@@ -2,86 +2,96 @@
     padding: 0;
     margin: 0;
 }
+
 body {
     background-color: #000000;
     overflow: hidden;
 }
-a, a:visited {
+
+a,
+a:visited {
     text-decoration: none;
     color: #c6c6c6;
 }
-a:hover, a:active {
+
+a:hover,
+a:active {
     color: #fff;
 }
+
 #info {
     display: none;
 }
-#controlPanel {
-    z-index: 50;
-    position: absolute;
-    bottom: 35px;
+
+.centering-helper {
+    height: 100%;
     width: 100%;
+    position: absolute;
+    bottom: 0;
+    pointer-events: none;
+}
+
+#controlPanel {
+    pointer-events: auto;
+    position: relative;
+    transform: translate(0px, -50%);
+    top: 50%;
+    width: 70%;
+    height: auto;
     color: #999;
     max-height: 600px;
-    -webkit-transition: max-height 0.8s;
-   	-moz-transition: max-height 0.8s;
-   	transition: max-height 0.8s;
+    transition: 0.2s ease-out;
     overflow: hidden;
-}
-#controlPanel.hidden {
-    max-height: 52px;
-}
-#tab {
-    padding: 10px 16px 2px 16px;
-    font-size: 32px;
-}
-#tab>a {
+    margin: auto;
     background-color: rgba(255, 255, 255, 0.15);
-    padding: 7px 10px 3px 10px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
+
+#controlPanel.hidden {
+    opacity: 0;
+    transform: scale(10);
+    pointer-events: none;
+    transition: 0.2s ease-in;
+}
+
 #trackInfoPanel {
-    float: left;
-    width: 100%;
     overflow: hidden;
     max-height: 200px;
-	-webkit-transition: max-height 0.8s;
-	-moz-transition: max-height 0.8s;
-	transition: max-height 0.8s;
-    background-color: rgba(255, 255, 255, 0.15);
+    transition: opacity 0.8s;
     padding-top: 10px;
 }
+
 #trackInfoPanel.hidden {
-    max-height: 0px;
-    -webkit-transition: max-height 0.2s;
-    -moz-transition: max-height 0.2s;
-    transition: max-height 0.2s;
+    opacity: 0;
+    transition: opacity 0.2s;
 }
+
 #infoImage {
     float: left;
-    padding: 0px 8px 8px 8px;
+    padding-right: 8px;
 }
+
 #infoArtist {
     font-size: 24px;
 }
+
 #infoTrack {
     font-size: 30px;
 }
+
 #playerControls {
     text-align: center;
     position: relative;
-    width: 100%;
-    float: left;
-    background-color: rgba(255, 255, 255, 0.15);
     padding-top: 10px;
 }
+
 #presetControls {
-	text-align: center;
-	position: relative;
-    width: 100%;
-    float: left;
-    background-color: rgba(255, 255, 255, 0.15);
+    text-align: center;
+    position: relative;
     padding-top: 10px;
 }
+
 #input {
     font-size: 20px;
     padding: 8px;
@@ -93,10 +103,9 @@ a:hover, a:active {
     background-color: #EBEBEB;
     color: #333;
     border: 1px solid #111;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
     border-radius: 3px;
 }
+
 #submit {
     position: absolute;
     color: #fff;
@@ -105,17 +114,19 @@ a:hover, a:active {
     background: none;
     border: none;
 }
+
 button {
-    #position: absolute;
     color: #fff;
     background: none;
     border: none;
     font-size: 32px;
     padding: 5px;
 }
+
 #player {
     width: 95%;
 }
+
 #messageBox {
     position: absolute;
     top: 30%;
@@ -125,46 +136,49 @@ button {
     background-color: rgba(255, 255, 255, 0.8);
     opacity: 1;
     max-height: 500px;
-    -webkit-transition: opacity 0.5s, max-height 0.5s, padding 0.5s;
-    -moz-transition: opacity 0.5s, max-height 0.5s, padding 0.5s;
     transition: opacity 0.5s, max-height 0.5s, padding 0.5s;
     z-index: 500;
     overflow: hidden;
 }
+
 #messageBox.hidden {
     opacity: 0;
     max-height: 0;
     padding: 0;
 }
+
 #messageBox p {
     margin-bottom: 10px;
 }
-#messageBox a:link, #messageBox a:visited {
+
+#messageBox a:link,
+#messageBox a:visited {
     color: #666;
 }
+
 footer {
-    position: absolute;
-    bottom: 0;
-    z-index: 100;
-    background-color: #111;
-    width: 100%;
-    color: #999;
-    height: 35px;
 }
-#credit, #github {
+
+#credit,
+#github {
     display: inline-block;
     padding-top: 8px;
     padding-right: 10px;
 }
+
 #scLogo {
     float: right;
 }
+
+
 /* make some txt small for small screens */
+
 @media (max-width: 900px) {
     footer {
         font-size: 12px;
     }
 }
+
 @media (max-width: 480px) {
     #input {
         font-size: 16px;

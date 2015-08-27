@@ -1,58 +1,73 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Soundcloud Visualizer by Michael Bromley</title>
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
-<div id="info">
-    Soundcloud visualizer: a canvas and webaudio API experiment by <a href="http://www.michaelbromley.co.uk">Michael Bromley</a>.<br>
-    For more information, visit the project's <a href="https://github.com/michaelbromley/soundcloud-visualizer">Github page</a><br><br>
-    <b>Instructions</b><br>
-    Paste the URL of a Soundcloud track or playlist into form and press enter.<br><br>
-    <b>Example track:</b> https://soundcloud.com/manchesterorchestra/simple-math<br>
-    <b>Example playlist:</b> https://soundcloud.com/manchesterorchestra/sets/simple-math-album-stream<br><br>
-    <b>Controls</b><br>
-    <b>space bar</b> - toggle play/pause<br>
-    <b>right/left arrow</b> - skip forward/backwards through playlist<br>
-</div>
-
-<canvas id="visualizer"></canvas>
-
-<div id="controlPanel" class="hidden">
-    <div id="tab"><a href="#" id="toggleButton"><i class="icon-menu"></i></a></div>
-    <div id="trackInfoPanel" class="hidden">
-        <img id="infoImage" src="">
-        <div id="infoArtist"></div>
-        <div id="infoTrack"></div>
+    <div id="info">
+        Soundcloud visualizer: a canvas and webaudio API experiment by <a href="http://www.michaelbromley.co.uk">Michael Bromley</a>.
+        <br> For more information, visit the project's <a href="https://github.com/michaelbromley/soundcloud-visualizer">Github page</a>
+        <br>
+        <br>
+        <b>Instructions</b>
+        <br> Paste the URL of a Soundcloud track or playlist into form and press enter.
+        <br>
+        <br>
+        <b>Example track:</b> https://soundcloud.com/manchesterorchestra/simple-math
+        <br>
+        <b>Example playlist:</b> https://soundcloud.com/manchesterorchestra/sets/simple-math-album-stream
+        <br>
+        <br>
+        <b>Controls</b>
+        <br>
+        <b>space bar</b> - toggle play/pause
+        <br>
+        <b>right/left arrow</b> - skip forward/backwards through playlist
+        <br>
     </div>
-    <div id="presetControls">
-        <button id="prevPreset"><i class="icon-previous"></i></button>
-        <span id="presetName">Preset name</span>
-        <button id="nextPreset"><i class="icon-next"></i></button>
-        <button id="randPreset" disabled=true><i class="icon-shuffle"></i></button>
+
+    <canvas id="visualizer"></canvas>
+
+    <div class="centering-helper">
+        <div id="controlPanel" class="hidden">
+            <div id="trackInfoPanel" class="hidden">
+                <img id="infoImage" src="">
+                <div id="infoArtist"></div>
+                <div id="infoTrack"></div>
+            </div>
+            <div id="presetControls">
+                <button id="prevPreset"><i class="icon-previous"></i></button>
+                <span id="presetName">Preset name</span>
+                <button id="nextPreset"><i class="icon-next"></i></button>
+                <button id="randPreset" disabled=true><i class="icon-shuffle"></i></button>
+            </div>
+            <div id="playerControls">
+                <form id="form">
+                    <input id="input" placeholder="Paste Soundcloud URL here (https://soundcloud.com/artist/track)">
+                    <button type="submit" id="submit"><i class="icon-play2"></i></button>
+                    <br>
+                </form>
+                <audio id="player" controls="" autoplay="" preload autobuffer></audio>
+            </div>
+
+            <footer>
+                <a href="#" id="credit"> <i class="icon-info"></i> About</a>
+                <span id="github"><a href="https://github.com/michaelbromley/soundcloud-visualizer"><i class="icon-github"></i> Source on Github</a></span>
+                <span id="scLogo"><a href="http://soundcloud.com/"><img src="assets/powered_by_white.png"></a></span>
+            </footer>
+        </div>
     </div>
-    <div id="playerControls">
-        <form id="form">
-            <input id="input" placeholder="Paste Soundcloud URL here (https://soundcloud.com/artist/track)">
-            <button type="submit" id="submit"><i class="icon-play2"></i></button><br>
-        </form>
-        <audio id="player" controls="" autoplay="" preload autobuffer></audio>
+
+    <div id="messageBox" class="hidden">
     </div>
-</div>
 
-<div id="messageBox" class="hidden">
-</div>
-
-<footer>
-    <a href="#" id="credit"> <i class="icon-info"></i> About</a>
-    <span id="github"><a href="https://github.com/michaelbromley/soundcloud-visualizer"><i class="icon-github"></i> Source on Github</a></span>
-    <span id="scLogo"><a href="http://soundcloud.com/"><img src="assets/powered_by_white.png"></a></span>
-</footer>
-
-<script src="http://connect.soundcloud.com/sdk.js"></script>
-<script src="js/index.js"></script>
+    <script src="http://connect.soundcloud.com/sdk.js"></script>
+    <script src="js/index.js"></script>
 </body>
+
 </html>

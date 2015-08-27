@@ -27,7 +27,7 @@ window.onload = function init() {
     };
 
     visualizer = new Milkshake({
-        containerId: 'visualizer',
+        canvas: document.getElementById('visualizer'),
         prevPresetId: 'prevPreset',
         nextPresetId: 'nextPreset',
         randPresetId: 'randPreset',
@@ -49,8 +49,8 @@ window.onload = function init() {
         var trackUrl = document.getElementById('input').value;
         loadAndUpdate(trackUrl);
     });
-    var toggleButton = document.getElementById('toggleButton');
-    toggleButton.addEventListener('click', function (e) {
+    var canvas = document.getElementById('visualizer');
+    canvas.addEventListener('click', function (e) {
         e.preventDefault();
         uiUpdater.toggleControlPanel();
     });
@@ -76,6 +76,14 @@ window.onload = function init() {
         case 39:
             // right key pressed
             loader.directStream('forward');
+            break;
+        case 78:
+            // n key pressed
+            visualizer.nextPreset();
+            break;
+        case 80:
+            // p key pressed
+            visualizer.prevPreset();
             break;
         }
     }

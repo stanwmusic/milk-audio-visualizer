@@ -28,19 +28,8 @@ var textures = require("./Renderable").textures;
 var Milkshake = Class.extend({
 
     /* 
-     * JavaScipt Class Includes 
-     *
-     * Resolved by the build process
-     */
-
-
-    /* 
      * Core Animation Interface 
      */
-
-    load: function (url) {
-        this.audio.loadSample(url);
-    },
 
     init: function (options) {
         this.texture_list = ["./assets/title.png"];
@@ -48,7 +37,7 @@ var Milkshake = Class.extend({
         var audio = options.audioSource;
         var prevButton = document.getElementById(options.prevPresetId);
         var nextButton = document.getElementById(options.nextPresetId);
-        var canvas = document.getElementById(options.containerId);
+        var canvas = options.canvas;
         var presetName = document.getElementById(options.presetNameId);
         var shaker;
 
