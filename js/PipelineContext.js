@@ -19,13 +19,15 @@
  *
  */
 
-var PipelineContext = function () {
-    this.init = function () {
-        this.fps = 25;
-        this.time = 0;
-        this.frame = 0;
-        this.progress = 0;
-    }
-};
+define(function () {
+    var PipelineContext = function () {
+        this.init = function () {
+            this.fps = 25;
+            this.time = 0;
+            this.frame = 0;
+            this.progress = 0;
+        }
+    };
 
-module.exports = PipelineContext;
+    return PipelineContext;
+});

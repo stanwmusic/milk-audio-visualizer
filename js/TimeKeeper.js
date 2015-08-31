@@ -17,86 +17,87 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * See 'LICENSE.txt' included within this release
  *
- */
+ **/
 
-var Class = require("class.extend");
+define(function () {
 
-var TimeKeeper = Class.extend({
-    init: function (presetDuration, smoothDuration) {
-        this.smoothDuration = smoothDuration;
-        this.presetDuration = presetDuration;
-        this.startTime = new Date();
-        this.UpdateTimers();
-    },
+    var TimeKeeper = Class({
+        constructor: function (presetDuration, smoothDuration) {
+            this.smoothDuration = smoothDuration;
+            this.presetDuration = presetDuration;
+            this.startTime = new Date();
+            this.UpdateTimers();
+        },
 
-    UpdateTimers: function () {
-        this.currentTime = this.getTicks(this.startTime) * 0.001;
-        this.presetFrameA++;
-        this.presetFrameB++;
-    },
+        UpdateTimers: function () {
+            this.currentTime = this.getTicks(this.startTime) * 0.001;
+            this.presetFrameA++;
+            this.presetFrameB++;
+        },
 
-    StartPreset: function () {
-        this.isSmoothing = false;
-        this.presetTimeA = this.currentTime;
-        this.presetFrameA = 1;
-        this.presetDurationA = this.sampledPresetDuration();
-    },
+        StartPreset: function () {
+            this.isSmoothing = false;
+            this.presetTimeA = this.currentTime;
+            this.presetFrameA = 1;
+            this.presetDurationA = this.sampledPresetDuration();
+        },
 
-    StartSmoothing: function () {
-        this.isSmoothing = true;
-        this.presetTimeB = this.currentTime;
-        this.presetFrameB = 1;
-        this.presetDurationB = this.sampledPresetDuration();
-    },
+        StartSmoothing: function () {
+            this.isSmoothing = true;
+            this.presetTimeB = this.currentTime;
+            this.presetFrameB = 1;
+            this.presetDurationB = this.sampledPresetDuration();
+        },
 
-    EndSmoothing: function () {
-        this.isSmoothing = false;
-        this.presetTimeA = this.presetTimeB;
-        this.presetFrameA = this.presetFrameB;
-        this.presetDurationA = this.presetDurationB;
-    },
+        EndSmoothing: function () {
+            this.isSmoothing = false;
+            this.presetTimeA = this.presetTimeB;
+            this.presetFrameA = this.presetFrameB;
+            this.presetDurationA = this.presetDurationB;
+        },
 
-    CanHardCut: function () {
-        return ((this.currentTime - this.presetTimeA) > 3)
-    },
+        CanHardCut: function () {
+            return ((this.currentTime - this.presetTimeA) > 3)
+        },
 
-    SmoothRatio: function () {
-        return (this.currentTime - this.presetTime) / this.smoothDuration;
-    },
+        SmoothRatio: function () {
+            return (this.currentTime - this.presetTime) / this.smoothDuration;
+        },
 
-    IsSmoothing: function () {
-        return this.isSmoothing;
-    },
+        IsSmoothing: function () {
+            return this.isSmoothing;
+        },
 
-    GetRunningTime: function () {
-        return this.currentTime;
-    },
+        GetRunningTime: function () {
+            return this.currentTime;
+        },
 
-    PresetProgressA: function () {
-        if (this.isSmoothing) return 1.0;
-        else return (this.currentTime - this.presetTimeA) / this.presetDurationA;
-    },
+        PresetProgressA: function () {
+            if (this.isSmoothing) return 1.0;
+            else return (this.currentTime - this.presetTimeA) / this.presetDurationA;
+        },
 
-    PresetProgressB: function () {
-        return (this.currentTime - this.presetTimeB) / this.presetDurationB;
-    },
+        PresetProgressB: function () {
+            return (this.currentTime - this.presetTimeB) / this.presetDurationB;
+        },
 
-    PresetFrameB: function () {
-        return this.presetFrameB;
-    },
+        PresetFrameB: function () {
+            return this.presetFrameB;
+        },
 
-    PresetFrameA: function () {
-        return this.presetFrameA;
-    },
+        PresetFrameA: function () {
+            return this.presetFrameA;
+        },
 
-    sampledPresetDuration: function () {
-        return 40;
-        return Math.max(1, Math.min(60, RandomNumberGenerators.gaussian(this.presetDuration)));
-    },
+        sampledPresetDuration: function () {
+            return 40;
+            return Math.max(1, Math.min(60, RandomNumberGenerators.gaussian(this.presetDuration)));
+        },
 
-    getTicks: function (start) {
-        return (new Date()) - start;
-    }
+        getTicks: function (start) {
+            return (new Date()) - start;
+        }
+    });
+
+    return TimeKeeper;
 });
-
-module.exports = TimeKeeper;
