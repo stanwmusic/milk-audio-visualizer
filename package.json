@@ -1,30 +1,31 @@
 {
-  "name": "soundcloud-visualizer",
+  "name": "milkroom",
   "version": "0.0.0",
-  "description": "This is an experiment in using the web audio API together with canvas to make some interesting and cool-looking visualizations.",
-  "main": "index.js",
+  "description": "Milkroom is a webapp that visualizes music from Soundcloud using Milkdrop visualizations.",
   "directories": {
     "test": "tests"
   },
   "scripts": {
-    "preinstall": "npm i -g browserify",
-    "build": "browserify js/index.js -o index.js -d",
-    "run": "beefy js/index.js"
+    "serve": "http-server",
+    "beautify": "js-beautify -jr js/*.js && js-beautify --type html -r index.html"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gunderson/soundcloud-visualizer.git"
+    "url": "https://github.com/nikicat/milkroom.git"
   },
   "author": [
     "Michael Bromley <michael@michaelbromley.co.uk>",
-    "Patrick Gunderson <patrick.gunderson@gmail.com>"
+    "Patrick Gunderson <patrick.gunderson@gmail.com>",
+    "Matt Gattis <matt@gatt.is>",
+    "Nikolay Bryskin <nbryskin@gmail.com>"
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gunderson/soundcloud-visualizer/issues"
+    "url": "https://github.com/nikicat/milkroom/issues"
   },
-  "homepage": "https://github.com/gunderson/soundcloud-visualizer",
+  "homepage": "https://github.com/nikicat/milkroom",
   "devDependencies": {
-    "browserify": "^7.0.0"
+    "http-server": "0.8.0",
+    "js-beautify": "1.5.10"
   }
 }
