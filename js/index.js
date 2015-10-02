@@ -29,9 +29,6 @@ requirejs(["domready!", "uiupdater", "audiosource", "soundcloudloader", "visuali
 
         var visualizer = new Milkshake({
             canvas: document.getElementById('visualizer'),
-            prevPresetId: 'prevPreset',
-            nextPresetId: 'nextPreset',
-            randPresetId: 'randPreset',
             presetNameId: 'presetName',
             audioSource: audioSource
         });
@@ -62,6 +59,16 @@ requirejs(["domready!", "uiupdater", "audiosource", "soundcloudloader", "visuali
             uiUpdater.displayMessage("About", message);
         });
 
+        var prevPreset = document.getElementById('prevPreset');
+        prevPreset.addEventListener("click", function () {
+            visualizer.shaker.selectPrev();
+        }, false);
+
+        var nextPreset = document.getElementById('nextPreset');
+        nextPreset.addEventListener("click", function () {
+            visualizer.shaker.selectNext(true);
+        }, false);
+
         window.addEventListener("keydown", keyControls, false);
 
         function keyControls(e) {
@@ -80,11 +87,11 @@ requirejs(["domready!", "uiupdater", "audiosource", "soundcloudloader", "visuali
                 break;
             case 78:
                 // n key pressed
-                visualizer.nextPreset();
+                visualizer.shaker.selectNext(true);
                 break;
             case 80:
                 // p key pressed
-                visualizer.prevPreset();
+                visualizer.shaker.selectPrev();
                 break;
             }
         }

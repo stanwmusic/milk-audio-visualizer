@@ -35,11 +35,10 @@ define(function (require) {
             this.texture_list = ["./assets/title.png"];
 
             var audio = options.audioSource;
-            var prevButton = document.getElementById(options.prevPresetId);
-            var nextButton = document.getElementById(options.nextPresetId);
             var canvas = options.canvas;
             var presetName = document.getElementById(options.presetNameId);
-            var shaker;
+            this.shaker = null;
+            var self = this;
 
             // resize the canvas to fill browser window dynamically
             window.addEventListener('resize', resizeCanvas, false);
@@ -47,25 +46,19 @@ define(function (require) {
             function resizeCanvas() {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
-                if (shaker)
-                    shaker.reset(canvas.width, canvas.height);
+                if (self.shaker)
+                    self.shaker.reset(canvas.width, canvas.height);
             }
             resizeCanvas();
 
             this.initGL(canvas, (function (glu) {
-                shaker = new Shaker(glu, function (name) {
+                self.shaker = new Shaker(glu, function (name) {
                     presetName.textContent = name;
                 });
-                prevButton.addEventListener("click", function () {
-                    shaker.selectPrev();
-                }, false);
-                nextButton.addEventListener("click", function () {
-                    shaker.selectNext(true);
-                }, false);
                 //this.shaker.selectNext(true);
                 function animationLoop(when) {
-                    shaker.music.addPCM.apply(shaker.music, audio.getPCM());
-                    shaker.renderFrame();
+                    self.shaker.music.addPCM.apply(self.shaker.music, audio.getPCM());
+                    self.shaker.renderFrame();
                     window.requestAnimationFrame(animationLoop);
                 }
                 window.requestAnimationFrame(animationLoop);

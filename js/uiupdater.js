@@ -52,8 +52,7 @@ define(function (require) {
             trackInfoPanel.className = '';
 
             // add a hash to the URL so it can be shared or saved
-            var trackToken = loader.sound.permalink_url.substr(22);
-            window.location = '#' + trackToken;
+            window.location = '#' + loader.urlToken;
         };
         this.toggleControlPanel = function () {
             if (controlPanel.className.indexOf('hidden') === 0) {

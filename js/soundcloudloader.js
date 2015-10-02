@@ -15,6 +15,7 @@ define(function () {
             this.errorMessage = "";
             this.player = player;
             this.uiUpdater = uiUpdater;
+            this.urlToken = null;
 
             player.crossOrigin = true;
         },
@@ -42,13 +43,15 @@ define(function () {
                         self.errorMessage += 'Make sure the URL has the correct format: https://soundcloud.com/user/title-of-the-track';
                         errorCallback();
                     } else {
+                        // In case of success load save part of the url to use it later
+                        self.urlToken = url.substr(23);
                         if (sound.kind == "playlist") {
                             // sound is a playlist
                             self.playlist = sound;
                             self.tracks = self.playlist.tracks;
                             self.trackIndex = 0;
                             self.sound = self.tracks[0];
-                        } else if (Array.isArray(sound)){
+                        } else if (Array.isArray(sound)) {
                             // sound is a Likes list
                             self.playlist = null;
                             self.tracks = sound;
