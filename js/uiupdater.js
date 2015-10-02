@@ -10,12 +10,14 @@ define(function (require) {
         var infoImage = document.getElementById('infoImage');
         var infoArtist = document.getElementById('infoArtist');
         var infoTrack = document.getElementById('infoTrack');
+        var infoPlaylist = document.getElementById('infoPlaylist');
         var messageBox = document.getElementById('messageBox');
 
         this.clearInfoPanel = function () {
             // first clear the current contents
             infoArtist.innerHTML = "";
             infoTrack.innerHTML = "";
+            infoPlaylist.innerHTML = "";
             trackInfoPanel.className = 'hidden';
         };
         this.update = function (loader) {
@@ -23,14 +25,10 @@ define(function (require) {
             var artistLink = document.createElement('a');
             artistLink.setAttribute('href', loader.sound.user.permalink_url);
             artistLink.innerHTML = loader.sound.user.username;
+
             var trackLink = document.createElement('a');
             trackLink.setAttribute('href', loader.sound.permalink_url);
-
-            if (loader.sound.kind == "playlist") {
-                trackLink.innerHTML = "<p>" + loader.sound.tracks[loader.streamPlaylistIndex].title + "</p>" + "<p>" + loader.sound.title + "</p>";
-            } else {
-                trackLink.innerHTML = loader.sound.title;
-            }
+            trackLink.innerHTML = loader.sound.title;
 
             var image = loader.sound.artwork_url ? loader.sound.artwork_url : loader.sound.user.avatar_url; // if no track artwork exists, use the user's avatar.
             infoImage.setAttribute('src', image);
@@ -40,6 +38,15 @@ define(function (require) {
 
             infoTrack.innerHTML = '';
             infoTrack.appendChild(trackLink);
+
+            if (loader.playlist) {
+                var playlistLink = document.createElement('a');
+                playlistLink.setAttribute('href', loader.playlist.permalink_url);
+                playlistLink.innerHTML = loader.playlist.title;
+
+                infoPlaylist.innerHTML = '';
+                infoPlaylist.appendChild(playlistLink);
+            }
 
             // display the track info panel
             trackInfoPanel.className = '';

@@ -1,31 +1,37 @@
 define(function () {
 
+    var client_id = "32e4c49c70a9e7e041bf913de7ec38ae"; // to get an ID go to http://developers.soundcloud.com/
+
     /**
      * Makes a request to the Soundcloud API and returns the JSON data.
      */
-    var SoundcloudLoader = function (player, uiUpdater) {
-        var self = this;
-        var client_id = "32e4c49c70a9e7e041bf913de7ec38ae"; // to get an ID go to http://developers.soundcloud.com/
-        this.sound = {};
-        this.streamUrl = "";
-        this.errorMessage = "";
-        this.player = player;
-        this.uiUpdater = uiUpdater;
+    var SoundcloudLoader = Class({
+        constructor: function (player, uiUpdater) {
+            this.sound = {};
+            this.playlist = null;
+            this.tracks = null;
+            this.trackIndex = 0;
+            this.streamUrl = "";
+            this.errorMessage = "";
+            this.player = player;
+            this.uiUpdater = uiUpdater;
 
-        player.crossOrigin = true;
+            player.crossOrigin = true;
+        },
 
         /**
          * Loads the JSON stream data object from the URL of the track (as given in the location bar of the browser when browsing Soundcloud),
          * and on success it calls the callback passed to it (for example, used to then send the stream_url to the audiosource object).
-         * @param track_url
+         * @param url
          * @param callback
          */
-        this.loadStream = function (track_url, successCallback, errorCallback) {
+        loadStream: function (url, successCallback, errorCallback) {
+            var self = this;
             SC.initialize({
                 client_id: client_id
             });
             SC.get('/resolve', {
-                url: track_url
+                url: url
             }, function (sound) {
                 if (sound) {
                     if (sound.errors) {
@@ -36,53 +42,60 @@ define(function () {
                         self.errorMessage += 'Make sure the URL has the correct format: https://soundcloud.com/user/title-of-the-track';
                         errorCallback();
                     } else {
-
                         if (sound.kind == "playlist") {
-                            self.sound = sound;
-                            self.streamPlaylistIndex = 0;
-                            self.streamUrl = function () {
-                                return sound.tracks[self.streamPlaylistIndex].stream_url + '?client_id=' + client_id;
-                            }
-                            successCallback();
+                            // sound is a playlist
+                            self.playlist = sound;
+                            self.tracks = self.playlist.tracks;
+                            self.trackIndex = 0;
+                            self.sound = self.tracks[0];
+                        } else if (Array.isArray(sound)){
+                            // sound is a Likes list
+                            self.playlist = null;
+                            self.tracks = sound;
+                            self.trackIndex = 0;
+                            self.sound = self.tracks[0];
                         } else {
+                            // sound is a single track
+                            self.playlist = null;
+                            self.tracks = null;
+                            self.trackIndex = 0;
                             self.sound = sound;
-                            self.streamUrl = function () {
-                                return sound.stream_url + '?client_id=' + client_id;
-                            };
-                            successCallback();
                         }
+                        self.streamUrl = function () {
+                            return self.sound.stream_url + '?client_id=' + client_id;
+                        };
+                        successCallback();
                     }
                 }
             });
-        };
+        },
 
-
-        this.directStream = function (direction) {
+        directStream: function (direction) {
             if (direction == 'toggle') {
                 if (this.player.paused) {
                     this.player.play();
                 } else {
                     this.player.pause();
                 }
-            } else if (this.sound.kind == "playlist") {
+            } else if (this.tracks) {
                 if (direction == 'coasting') {
                     this.streamPlaylistIndex++;
                 } else if (direction == 'forward') {
-                    if (this.streamPlaylistIndex >= this.sound.track_count - 1) this.streamPlaylistIndex = 0;
-                    else this.streamPlaylistIndex++;
+                    if (this.trackIndex >= this.tracks.length - 1) this.trackIndex = 0;
+                    else this.trackIndex++;
                 } else {
-                    if (this.streamPlaylistIndex <= 0) this.streamPlaylistIndex = this.sound.track_count - 1;
-                    else this.streamPlaylistIndex--;
+                    if (this.trackIndex <= 0) this.trackIndex = this.tracks.length - 1;
+                    else this.trackIndex--;
                 }
-                if (this.streamPlaylistIndex >= 0 && this.streamPlaylistIndex <= this.sound.track_count - 1) {
+                if (this.trackIndex >= 0 && this.trackIndex <= this.tracks.length - 1) {
+                    this.sound = this.tracks[this.trackIndex];
                     this.player.setAttribute('src', this.streamUrl());
                     this.uiUpdater.update(this);
                     this.player.play();
                 }
             }
         }
-    };
+    });
 
     return SoundcloudLoader;
-
 });

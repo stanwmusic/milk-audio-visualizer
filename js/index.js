@@ -27,7 +27,7 @@ requirejs(["domready!", "uiupdater", "audiosource", "soundcloudloader", "visuali
                 });
         };
 
-        visualizer = new Milkshake({
+        var visualizer = new Milkshake({
             canvas: document.getElementById('visualizer'),
             prevPresetId: 'prevPreset',
             nextPresetId: 'nextPreset',
