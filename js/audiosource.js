@@ -50,17 +50,45 @@ define(["prefixmethod"], function (prefixMethod) {
     var SoundCloudAudioSource = function (loader, player) {
         var self = this;
         var audioCtx = new window.AudioContext();
+
+        var listener = audioCtx.listener;
+        var panner = audioCtx.createPanner();
         var leftAnalyser = audioCtx.createAnalyser();
         var rightAnalyser = audioCtx.createAnalyser();
         var splitter = audioCtx.createChannelSplitter(2);
         var merger = audioCtx.createChannelMerger(2);
         var source = audioCtx.createMediaElementSource(player);
 
+        panner.panningModel = 'HRTF';
+        panner.distanceModel = 'inverse';
+        panner.refDistance = 1;
+        panner.maxDistance = 10000;
+        panner.rolloffFactor = 0.1;
+        panner.coneInnerAngle = 360;
+        panner.coneOuterAngle = 0;
+        panner.coneOuterGain = 0;
+        panner.setOrientation(1, 0, 0);
+
+        var x = 0,
+            y = 0,
+            z = -10;
+        panner.setPosition(x, y, z);
+        listener.setOrientation(0, 0, -1, 0, 1, 0);
+
+        window.doppler.init(function (left, right) {
+            var threshold = 10;
+
+            var diff = (left.right + right.right) - (left.left + right.left);
+            panner.setPosition(x + diff, y, z);
+            console.log("bandwidth: " + left.left + "  " + left.right + " " + right.left + "  " + right.right); // + " " + panner.pan.value);
+        });
+
         // Smallest fftSize possible to speed up calculations
         leftAnalyser.fftSize = 512;
         rightAnalyser.fftSize = 512;
 
-        source.connect(splitter);
+        source.connect(panner);
+        panner.connect(splitter);
         splitter.connect(leftAnalyser, 0);
         splitter.connect(rightAnalyser, 1);
         leftAnalyser.connect(merger, 0, 0);
